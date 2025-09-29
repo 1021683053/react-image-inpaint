@@ -1,6 +1,6 @@
 
 import React, { useRef, useEffect, useCallback } from 'react';
-import { App, Group, Leafer, Pen, DragEvent, Image, Rect, Frame, ImageEvent } from 'leafer-ui'
+import { App, Group, Leafer, Pen, DragEvent, Image, Cursor, Rect, Frame, ImageEvent } from 'leafer-ui'
 import '@leafer-in/editor' // 导入图形编辑器插件  
 import '@leafer-in/viewport'
 import '@leafer-in/view'
@@ -24,7 +24,7 @@ export const Editor = () => {
       width: 800,
       height: 600,
       type: 'design',
-      fill: '#333'
+      fill: '#333',
     })
 
     // 创建一个图片对象
@@ -35,6 +35,9 @@ export const Editor = () => {
           mode: 'stretch',
         },
     })
+
+
+ 
 
     image.once(ImageEvent.LOADED, (e: ImageEvent)=>{
       // console.log('图片加载完成', image.width, image.height)
@@ -63,9 +66,32 @@ export const Editor = () => {
         width: image.width,
         height: image.height,
         fill: 'transparent',
-        // mask: true
+        blendMode: 'source-over',
+        cursor: 'none',
       })
 
+      // 创建一个笔刷元素
+      const cursor = new Rect({
+        x: 0,
+        y: 0,
+        width: 60,
+        height: 60,
+        fill: 'transparent',
+        stroke: 'red',
+        strokeWidth: 2,
+        radius: 60, // 圆形
+        isSelectable: false, // 禁止选中
+        isHoverable: false   // 禁止 hover
+      })
+
+      leafer.on(DragEvent.MOVE, (e: DragEvent) => {
+        // 光标跟随鼠标移动
+        cursor.x = e.getPagePoint().x - 30
+        cursor.y = e.getPagePoint().y - 30
+      })
+
+
+      mask.add(cursor)
     
       // mask.add(pen)
       leafer.add(mask)
