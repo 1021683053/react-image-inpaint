@@ -23,17 +23,12 @@ export const Editor = (props: Editor) => {
         <Mask mode={mode} strokeWidth={strokeWidth} />
       </Container>
       <div>
-        <button onClick={()=> setMode('Pen') }>Pen</button>
-        <button onClick={()=> setMode('Eraser') }>Eraser</button>
-        <button onClick={()=> setMode('None') }>None</button>
-
+        <button onClick={()=> setMode('Pen') } style={{ backgroundColor: mode === 'Pen' ? 'lightblue' : undefined }}>Pen</button>
+        <button onClick={()=> setMode('Eraser') } style={{ backgroundColor: mode === 'Eraser' ? 'lightblue' : undefined }}>Eraser</button>
+        <button onClick={()=> setMode('None') } style={{ backgroundColor: mode === 'None' ? 'lightblue' : undefined }}>None</button>
         <br />
-        <button onClick={()=> setStrokeWidth(40)}>40</button>
-        <button onClick={()=> setStrokeWidth(60)}>60</button>
-        <button onClick={()=> setStrokeWidth(80)}>80</button>
-        <button onClick={()=> setStrokeWidth(100)}>100</button>
-        <button onClick={()=> setStrokeWidth(120)}>120</button>
-        <button onClick={()=> setStrokeWidth(160)}>160</button>
+        <input type="range" min={2} max={300} defaultValue={strokeWidth} value={strokeWidth} step={2} onChange={e => setStrokeWidth(Number(e.target.value))} />
+        <span> Brush Size: {strokeWidth} </span>
       </div>
     </div>
   )

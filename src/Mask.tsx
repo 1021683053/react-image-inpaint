@@ -77,7 +77,7 @@ export const Mask = (props: MaskProps) => {
 
   // 初始化光标
   useEffect(()=>{
-    if( !leafer ) return;
+    if( !leafer || !mask ) return;
     // 创建一个笔刷元素
     const cursor = new Ellipse({
       x: 0,
@@ -98,7 +98,7 @@ export const Mask = (props: MaskProps) => {
     return ()=>{
       cursor.destroy()
     }
-  }, [leafer, strokeWidth])
+  }, [leafer, mask, strokeWidth])
 
 
   // 初始化遮罩
