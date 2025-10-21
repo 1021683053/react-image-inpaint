@@ -4,10 +4,11 @@ import { useEffect, useRef, useCallback } from 'react';
 
 export type MaskProps = {
   mode: 'Pen' | 'Eraser' | 'None'
+  strokeWidth?: number
 }
 
 export const Mask = (props: MaskProps) => {
-  const { mode = "None" } = props
+  const { mode = "None", strokeWidth = 60 } = props
   const destroyMask = useStore((store)=> store.destroyMask);
   const leafer = useStore((store)=> store.leafer);
   const image = useStore((store)=> store.image);
@@ -25,10 +26,10 @@ export const Mask = (props: MaskProps) => {
     if( !pen ) return;
     mask.add(pen)
     // 根据当前模式，设置画笔样式
-    pen.setStyle({ stroke: '000000', strokeWidth: 60, strokeCap: 'round', strokeJoin: 'round', blendMode: 'source-over' })
+    pen.setStyle({ stroke: '000000', strokeWidth, strokeCap: 'round', strokeJoin: 'round', blendMode: 'source-over' })
     pen.moveTo(point.x, point.y)
     console.log('startDrawing', mask.width, mask.height)
-  }, [ mask ])
+  }, [ mask, strokeWidth ])
 
   const stopDrawing = useCallback((e: DragEvent)=>{
     const pen = cursorRef.current;
@@ -44,10 +45,10 @@ export const Mask = (props: MaskProps) => {
     cursorRef.current = eraser;
     mask.add(eraser)
     // 根据当前模式，设置画笔样式
-    eraser.setStyle({ stroke: '#000000', strokeWidth: 60, strokeCap: 'round', strokeJoin: 'round', blendMode: 'destination-out' })
+    eraser.setStyle({ stroke: '#000000', strokeWidth, strokeCap: 'round', strokeJoin: 'round', blendMode: 'destination-out' })
     eraser.moveTo(point.x, point.y)
     console.log('startErasing', mask.width, mask.height)
-  }, [mask])
+  }, [mask, strokeWidth])
 
   const stopErasing = useCallback((e: DragEvent)=>{
     const eraser = cursorRef.current;
@@ -81,23 +82,23 @@ export const Mask = (props: MaskProps) => {
     const cursor = new Ellipse({
       x: 0,
       y: 0,
-      width: 60,
-      height: 60,
+      width: strokeWidth,
+      height: strokeWidth,
       fill: 'transparent',
       stroke: 'red',
       strokeWidth: 2,
       isSelectable: false, // 禁止选中
       isHoverable: false   // 禁止 hover
     })
-    leafer.add(cursor, 999)
+    leafer.add(cursor, 99999)
     leafer.on(DragEvent.MOVE, (e: DragEvent)=>{
-      cursor.x = e.getPagePoint().x - 30
-      cursor.y = e.getPagePoint().y - 30
+      cursor.x = e.getPagePoint().x - (strokeWidth/2)
+      cursor.y = e.getPagePoint().y - (strokeWidth/2)
     })
     return ()=>{
       cursor.destroy()
     }
-  }, [leafer])
+  }, [leafer, strokeWidth])
 
 
   // 初始化遮罩
