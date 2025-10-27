@@ -78,6 +78,8 @@ export const Mask = (props: MaskProps) => {
   // 初始化光标
   useEffect(()=>{
     if( !leafer || !mask ) return;
+    // 笔刷描边宽度 宽度的12%，整体为24%, 最小值为2，都为正数
+    const cursorStrokeWidth = Math.max(2, strokeWidth * 0.12);
     // 创建一个笔刷元素
     const cursor = new Ellipse({
       x: 0,
@@ -85,8 +87,8 @@ export const Mask = (props: MaskProps) => {
       width: strokeWidth,
       height: strokeWidth,
       fill: 'transparent',
-      stroke: 'red',
-      strokeWidth: 2,
+      stroke: '#999999',
+      strokeWidth: cursorStrokeWidth,
       isSelectable: false, // 禁止选中
       isHoverable: false   // 禁止 hover
     })
